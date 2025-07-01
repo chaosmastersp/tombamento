@@ -11,7 +11,7 @@ for key in ["autenticado", "arquivo_novo", "arquivo_tomb"]:
 
 def autenticar():
     senha = st.text_input("Digite a senha para acessar o sistema:", type="password")
-    if senha == "sua_senha_segura":  # Substitua por senha segura
+    if senha == "tombamento":  # Substitua por senha segura
         st.session_state.autenticado = True
         st.success("Acesso autorizado.")
     elif senha:
@@ -92,7 +92,6 @@ if st.session_state.arquivo_novo and st.session_state.arquivo_tomb:
                     "% Taxa Operação": row['% Taxa Operação'],
                     "Código Linha Crédito": row['Código Linha Crédito'],
                     "Nome Comercial": row['Nome Comercial'],
-                    "CNPJ Empresa": row['CNPJ Empresa'],
                     "Consignante": consignante,
                     "Empresa Consignante": empresa
                 })
@@ -102,5 +101,4 @@ if st.session_state.arquivo_novo and st.session_state.arquivo_tomb:
         st.info("Insira um CPF válido com 11 dígitos.")
 else:
     st.warning("⚠️ Carregue os dois arquivos para continuar.")
-
 
