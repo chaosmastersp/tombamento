@@ -5,12 +5,14 @@ import os
 
 st.set_page_config(page_title="Consulta de Empréstimos", layout="wide")
 
-if "autenticado" not in st.session_state:
-    st.session_state.autenticado = False
+# Inicialização segura do estado
+for key in ["autenticado", "arquivo_novo", "arquivo_tomb"]:
+    if key not in st.session_state:
+        st.session_state[key] = None if key != "autenticado" else False
 
 def autenticar():
     senha = st.text_input("Digite a senha para acessar o sistema:", type="password")
-    if senha == "sua_senha_segura":  # Substitua por senha segura
+    if senha == "tombamento":  # Substitua por senha segura
         st.session_state.autenticado = True
         st.success("Acesso autorizado.")
     else:
@@ -33,9 +35,9 @@ def carregar_bases():
 
 st.sidebar.header("Gerenciamento de Dados")
 
-if "arquivo_novo" not in st.session_state or st.session_state.arquivo_novo is None:
+if st.session_state.arquivo_novo is None:
     st.session_state.arquivo_novo = st.sidebar.file_uploader("Base NovoEmprestimo.xlsx", type="xlsx")
-if "arquivo_tomb" not in st.session_state or st.session_state.arquivo_tomb is None:
+if st.session_state.arquivo_tomb is None:
     st.session_state.arquivo_tomb = st.sidebar.file_uploader("Base Tombamento.xlsx", type="xlsx")
 
 if st.session_state.arquivo_novo and st.session_state.arquivo_tomb:
