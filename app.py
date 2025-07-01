@@ -54,7 +54,7 @@ if st.session_state.arquivo_novo and st.session_state.arquivo_tomb:
     if st.sidebar.button("Atualizar Bases"):
         st.session_state.arquivo_novo = None
         st.session_state.arquivo_tomb = None
-        st.experimental_rerun()
+        st.rerun()
 
     st.title("🔍 Consulta de Empréstimos por CPF")
     cpf_input = st.text_input("Digite o CPF (apenas números):").strip()
