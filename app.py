@@ -1,7 +1,6 @@
 
 import streamlit as st
 import pandas as pd
-import os
 
 st.set_page_config(page_title="Consulta de Empréstimos", layout="wide")
 
@@ -12,16 +11,13 @@ for key in ["autenticado", "arquivo_novo", "arquivo_tomb"]:
 
 def autenticar():
     senha = st.text_input("Digite a senha para acessar o sistema:", type="password")
-    if senha == "tombamento":  # Substitua por senha segura
+    if senha == "sua_senha_segura":  # Substitua por senha segura
         st.session_state.autenticado = True
         st.success("Acesso autorizado.")
     elif senha:
         st.error("Senha incorreta.")
 
-# Executa autenticação
 autenticar()
-
-# Interrompe somente se ainda não autenticado
 if not st.session_state.autenticado:
     st.stop()
 
@@ -31,10 +27,19 @@ def formatar_documentos(df, col, tamanho):
 def carregar_bases():
     st.session_state.novo_df = pd.read_excel(st.session_state.arquivo_novo)
     st.session_state.tomb_df = pd.read_excel(st.session_state.arquivo_tomb)
-    st.session_state.novo_df['Número CPF/CNPJ'] = formatar_documentos(st.session_state.novo_df, 'Número CPF/CNPJ', 11)
-    st.session_state.novo_df['CNPJ Empresa'] = formatar_documentos(st.session_state.novo_df, 'CNPJ Empresa', 14)
-    st.session_state.tomb_df['Número CPF'] = formatar_documentos(st.session_state.tomb_df, 'Número CPF', 11)
-    st.session_state.tomb_df['Número Contrato'] = st.session_state.tomb_df['Número Contrato'].astype(str)
+
+    # Renomeando colunas para garantir consistência
+    novo = st.session_state.novo_df.rename(columns=lambda x: x.strip())
+    tomb = st.session_state.tomb_df.rename(columns=lambda x: x.strip())
+
+    # Equalização
+    novo['Número CPF/CNPJ'] = formatar_documentos(novo, 'Número CPF/CNPJ', 11)
+    tomb['CPF Tomador'] = formatar_documentos(tomb, 'CPF Tomador', 11)
+    if 'Número Contrato' in tomb.columns:
+        tomb['Número Contrato'] = tomb['Número Contrato'].astype(str)
+
+    st.session_state.novo_df = novo
+    st.session_state.tomb_df = tomb
 
 st.sidebar.header("Gerenciamento de Dados")
 
@@ -72,7 +77,7 @@ if st.session_state.arquivo_novo and st.session_state.arquivo_tomb:
             for _, row in filtrado.iterrows():
                 contrato = str(row['Número Contrato Crédito'])
                 match = tomb[
-                    (tomb['Número CPF'] == cpf_input) &
+                    (tomb['CPF Tomador'] == cpf_input) &
                     (tomb['Número Contrato'] == contrato)
                 ]
 
