@@ -12,14 +12,17 @@ for key in ["autenticado", "arquivo_novo", "arquivo_tomb"]:
 
 def autenticar():
     senha = st.text_input("Digite a senha para acessar o sistema:", type="password")
-    if senha == "tombamento":  # Substitua por senha segura
+    if senha == "sua_senha_segura":  # Substitua por senha segura
         st.session_state.autenticado = True
         st.success("Acesso autorizado.")
-    else:
+    elif senha:
         st.error("Senha incorreta.")
 
+# Executa autenticação
+autenticar()
+
+# Interrompe somente se ainda não autenticado
 if not st.session_state.autenticado:
-    autenticar()
     st.stop()
 
 def formatar_documentos(df, col, tamanho):
@@ -94,4 +97,5 @@ if st.session_state.arquivo_novo and st.session_state.arquivo_tomb:
         st.info("Insira um CPF válido com 11 dígitos.")
 else:
     st.warning("⚠️ Carregue os dois arquivos para continuar.")
+
 
