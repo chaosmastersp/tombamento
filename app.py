@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import os
@@ -7,6 +6,10 @@ from datetime import datetime
 from oauth2client.service_account import ServiceAccountCredentials
 
 st.set_page_config(page_title="Consulta de Empréstimos", layout="wide")
+
+# Inicializa aba padrão se ainda não existir
+if "menu" not in st.session_state:
+    st.session_state.menu = "Consulta Individual"
 
 # Google Sheets Setup
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -71,7 +74,7 @@ def salvar_arquivos(upload_novo, upload_tomb):
     carregar_bases_do_disco()
 
 st.sidebar.header("Menu")
-menu = st.sidebar.radio("Navegação", ["Consulta Individual", "Registros Consulta Ativa", "Atualizar Bases"])
+menu = st.sidebar.radio("Navegação", ["Consulta Individual", "Registros Consulta Ativa", "Atualizar Bases"], key="menu")
 
 if menu == "Atualizar Bases":
     st.session_state.arquivo_novo = st.sidebar.file_uploader("Nova Base NovoEmprestimo.xlsx", type="xlsx")
@@ -146,7 +149,7 @@ if menu == "Consulta Individual":
                 if st.button("Marcar como Consulta Ativa"):
                     marcar_cpf_ativo(cpf_input)
                     st.success("✅ CPF marcado com sucesso.")
-                    st.experimental_rerun()
+                    st.rerun()
 
 if menu == "Registros Consulta Ativa":
     st.title("📋 Registros de Consulta Ativa")
